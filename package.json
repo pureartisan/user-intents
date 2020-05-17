@@ -1,0 +1,34 @@
+{
+  "name": "user-intents",
+  "version": "1.0.0-alpha.0",
+  "description": "A light-wieght library for User Intents in web applications.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pureartisan/user-intents.git"
+  },
+  "keywords": [
+    "user-intent"
+  ],
+  "author": "Prageeth Silva <prageethsilva@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pureartisan/user-intents/issues"
+  },
+  "homepage": "https://github.com/pureartisan/user-intents#readme",
+  "files": [
+      "lib/**/*"
+  ],
+  "devDependencies": {
+    "prettier": "^2.0.5",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.9.2"
+  }
+}
