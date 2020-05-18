@@ -35,7 +35,6 @@
   ],
   "devDependencies": {
     "@types/jest": "^25.2.2",
-    "@types/lodash": "^4.14.151",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
     "ts-jest": "^26.0.0",
@@ -43,7 +42,5 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.2"
   },
-  "dependencies": {
-    "lodash": "^4.17.15"
-  }
+  "dependencies": {}
 }
