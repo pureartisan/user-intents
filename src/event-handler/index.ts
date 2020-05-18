@@ -1,5 +1,3 @@
-import { remove } from "lodash";
-
 export type Callable = (...args: any[]) => void;
 
 export class EventHandler<T extends Callable> {
@@ -11,10 +9,10 @@ export class EventHandler<T extends Callable> {
     }
 
     remove(listener: T): void {
-        this.listeners = remove(this.listeners, listener);
+        this.listeners = this.listeners.filter(item => item !== listener);
     }
 
-    trigger<U>(...args: any[]): void {
+    trigger(...args: any[]): void {
         this.listeners.forEach(listener => {
             listener(...args);
         });
