@@ -1,4 +1,4 @@
-export type Callable = (...args: any[]) => void;
+type Callable = (...args: any[]) => void;
 
 export class EventHandler<T extends Callable> {
 

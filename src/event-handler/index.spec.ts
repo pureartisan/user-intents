@@ -1,4 +1,4 @@
-import { EventHandler, Callable } from './index';
+import { EventHandler } from './index';
 
 type Listner = (foo: string, bar: number) => void;
 
