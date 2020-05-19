@@ -3,12 +3,12 @@ import { EventHandler } from '../event-handler';
 interface IntentMetaData {
     timeout: number,
     duration: number,
-    data?: object
+    data?: any
 }
 
 export type EventType = 'completed' | 'incompleted' | 'cancelled' | 'failed';
 
-export type EventListener = (name: string, duration: number, data?: object) => void;
+export type EventListener = (name: string, duration: number, data?: any) => void;
 
 export class UserIntentService {
 
@@ -18,12 +18,16 @@ export class UserIntentService {
 
     private eventHandlers: Map<EventType, EventHandler<EventListener>> = new Map<EventType, EventHandler<EventListener>>();
 
+    constructor() {
+        this.initEventHandlers();
+    }
+
     public setDefaultDuration(duration: number): void {
         this.validateDuration(duration);
         this.defaultDuration = duration;
     }
 
-    public start(name: string, duration?: number, data?: object): void {
+    public start(name: string, duration?: number, data?: any): void {
         this.validateName(name);
 
         duration = duration || this.defaultDuration;
@@ -88,6 +92,7 @@ export class UserIntentService {
         let metaData: IntentMetaData;
 
         const timeout = window.setTimeout(() => {
+            this.removeIntent(name, metaData);
             this.triggerEvent('failed', name, metaData);
         }, duration);
 
@@ -106,7 +111,7 @@ export class UserIntentService {
     }
 
     private triggerEvent(type: EventType, name: string, metaData: IntentMetaData): void {
-        this.getEventHandler(type).trigger(name, metaData.duration, metaData.duration);
+        this.getEventHandler(type).trigger(name, metaData.duration, metaData.data);
     }
 
     private warn(msg: string): void {
@@ -116,6 +121,13 @@ export class UserIntentService {
 
     private warnNonExistingEvent(name: string, action: string): void {
         this.warn(`Trying to ${action} a non-existing intent: ${name}. Did you forget to start it or has already completed/failed?`);
+    }
+
+    private initEventHandlers(): void {
+        const types: EventType[] = [ 'completed', 'incompleted', 'cancelled', 'failed' ];
+        types.forEach(type => {
+            this.eventHandlers.set(type, new EventHandler<EventListener>());
+        });
     }
 
 }
