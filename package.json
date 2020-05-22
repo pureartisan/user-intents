@@ -8,7 +8,7 @@
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
-    "test": "jest --config jestconfig.json --coverage=true",
+    "test": "jest --config jestconfig.json --coverage=true --collectCoverageFrom=src/**/*.{ts,js}",
     "test:watch": "jest --config jestconfig.json --watch",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
