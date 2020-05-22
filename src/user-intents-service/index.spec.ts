@@ -10,24 +10,6 @@ describe('UserIntentService', () => {
         service = new UserIntentService();
     });
 
-    describe('addEventListener()', () => {
-
-        it('should not fail when adding an event listener', () => {
-            const listener = jest.fn();
-            expect(() => service.addEventListener('completed', listener)).not.toThrow();
-        });
-
-    });
-
-    describe('removeEventListener()', () => {
-
-        it('should not fail when removing an event listener', () => {
-            const listener = jest.fn();
-            expect(() => service.removeEventListener('completed', listener)).not.toThrow();
-        });
-
-    });
-
     describe('start()', () => {
 
         it('should throw error if invalid name is provided', () => {
@@ -100,18 +82,18 @@ describe('UserIntentService', () => {
             const onFailed = jest.fn();
             service.addEventListener('failed', onFailed);
 
-            const defaultDuration = 50;
+            const defaultDuration = 100;
             service.setDefaultDuration(defaultDuration);
 
             // no duration is provided
             service.start('my-intent');
 
             // time elapses, but hasn't reached default duration yet
-            await sleep(defaultDuration - 1);
+            await sleep(50);
             expect(onFailed).not.toHaveBeenCalled();
 
             // further time elapses, and passes default duration
-            await sleep(2); // time => defaultDuration + 2
+            await sleep(60); // time => 110 (> default duration)
 
             // intent should fail
             expect(onFailed).toHaveBeenCalled();
@@ -137,19 +119,24 @@ describe('UserIntentService', () => {
             // intent should fail
             expect(onFailed).toHaveBeenCalled();
         });
-
     });
 
     describe('complete()', () => {
 
+        // tslint:disable-next-line no-console
+        const originalConsoleWarn = console.warn;
+
         let consoleWarn: jest.SpyInstance;
 
         beforeEach(() => {
-            consoleWarn = jest.spyOn(global.console, 'warn');
+            consoleWarn = jest.fn();
+            // tslint:disable-next-line no-console
+            console.warn = consoleWarn as any;
         });
 
         afterEach(() => {
-            consoleWarn.mockRestore();
+            // tslint:disable-next-line no-console
+            console.warn = originalConsoleWarn;
         });
 
         it('should not log warning if intent was started and is still pending', () => {
@@ -177,7 +164,7 @@ describe('UserIntentService', () => {
             // time elpased and intent failed
             await sleep(duration + 1);
 
-            // complete intent no longer pending
+            // complete no longer pending intent
             service.complete('my-intent');
 
             expect(consoleWarn).toHaveBeenCalled();
@@ -189,7 +176,7 @@ describe('UserIntentService', () => {
             // intent manually cancelled
             service.cancel('my-intent');
 
-            // complete intent no longer pending
+            // complete no longer pending intent
             service.complete('my-intent');
 
             expect(consoleWarn).toHaveBeenCalled();
@@ -211,7 +198,128 @@ describe('UserIntentService', () => {
             expect(onCompleted).toHaveBeenCalledTimes(1);
             expect(onCompleted).toHaveBeenCalledWith('my-intent', 1000, { foo: 'bar' });
         });
+    });
 
+    describe('cancel()', () => {
+
+        // tslint:disable-next-line no-console
+        const originalConsoleWarn = console.warn;
+
+        let consoleWarn: jest.SpyInstance;
+
+        beforeEach(() => {
+            consoleWarn = jest.fn();
+            // tslint:disable-next-line no-console
+            console.warn = consoleWarn as any;
+        });
+
+        afterEach(() => {
+            // tslint:disable-next-line no-console
+            console.warn = originalConsoleWarn;
+        });
+
+        it('should not log warning if intent was started and is still pending', () => {
+            service.start('my-intent', 10);
+
+            // cancel pending intent
+            service.cancel('my-intent');
+
+            expect(consoleWarn).not.toHaveBeenCalled();
+        });
+
+        it('should log warning if intent was never started', () => {
+            service.start('my-intent', 10);
+
+            // cancel non-existing intent
+            service.cancel('other-intent');
+
+            expect(consoleWarn).toHaveBeenCalled();
+        });
+
+        it('should log warning if intent has already failed', async () => {
+            const duration = 10;
+            service.start('my-intent', duration);
+
+            // time elpased and intent failed
+            await sleep(duration + 1);
+
+            // cancel no longer pending intent
+            service.cancel('my-intent');
+
+            expect(consoleWarn).toHaveBeenCalled();
+        });
+
+        it('should log warning if intent has already been completed', () => {
+            service.start('my-intent', 10);
+
+            // intent completed
+            service.complete('my-intent');
+
+            // cancel no longer pending intent
+            service.complete('my-intent');
+
+            expect(consoleWarn).toHaveBeenCalled();
+        });
+
+        it('should trigger a `cancelled` event when the started event is cancelled before the duration', async () => {
+            const onCancelled = jest.fn();
+            service.addEventListener('cancelled', onCancelled);
+
+            // first time
+            service.start('my-intent', 1000, { foo: 'bar' });
+
+            // wait for a while, but not as long as the timeout duration
+            await sleep(20);
+
+            // cancel the intent before the timeout
+            service.cancel('my-intent');
+
+            expect(onCancelled).toHaveBeenCalledTimes(1);
+            expect(onCancelled).toHaveBeenCalledWith('my-intent', 1000, { foo: 'bar' });
+        });
+    });
+
+    describe('event listeners', () => {
+        it('should not fail when adding an event listener', () => {
+            const listener = jest.fn();
+            expect(() => service.addEventListener('completed', listener)).not.toThrow();
+        });
+
+        it('should not fail when removing an event listener', () => {
+            const listener = jest.fn();
+            expect(() => service.removeEventListener('completed', listener)).not.toThrow();
+        });
+
+        it('should only call active event listeners', async () => {
+            const onCompleted1 = jest.fn();
+            const onCompleted2 = jest.fn();
+
+            // add both event listeners
+            service.addEventListener('completed', onCompleted1);
+            service.addEventListener('completed', onCompleted2);
+
+            // first event
+            startAndCompleteIntent('my-intent-1');
+
+            // both listeners to should have been triggered
+            expect(onCompleted1).toHaveBeenCalledTimes(1);
+            expect(onCompleted2).toHaveBeenCalledTimes(1);
+
+            // remove first event listener
+            service.removeEventListener('completed', onCompleted1);
+
+            // second event
+            startAndCompleteIntent('my-intent-2');
+
+            // only second listener should be called twice
+            expect(onCompleted1).toHaveBeenCalledTimes(1);
+            expect(onCompleted2).toHaveBeenCalledTimes(2);
+        });
+
+        function startAndCompleteIntent(name: string): void {
+            service.start(name, 1000);
+            service.complete(name);
+        }
     });
 
 });

@@ -88,7 +88,7 @@ export class UserIntentService {
         }
     }
 
-    private addNewIntent(name: string, duration: number, data?: object): void {
+    private addNewIntent(name: string, duration: number, data?: any): void {
         let metaData: IntentMetaData;
 
         const timeout = window.setTimeout(() => {

@@ -95,4 +95,19 @@ describe('EventHandler', () => {
         expect(listener2).toHaveBeenCalledWith('event-1', 123);
     });
 
+    it('should ignore the same listener being added multiple times', () => {
+        const listener = jest.fn();
+
+        // add event listener multiple times
+        eventHandler.add(listener);
+        eventHandler.add(listener);
+        eventHandler.add(listener);
+
+        // trigger event
+        eventHandler.trigger('event-1', 123);
+
+        // listener should have been called only once
+        expect(listener).toHaveBeenCalledTimes(1);
+    });
+
 });
