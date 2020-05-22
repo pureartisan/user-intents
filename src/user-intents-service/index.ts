@@ -6,6 +6,7 @@ interface IntentMetaData {
     data?: any
 }
 
+// NOTE: remember to initialise all of them in the service
 export type EventType = 'completed' | 'incompleted' | 'cancelled' | 'failed';
 
 export type EventListener = (name: string, duration: number, data?: any) => void;
@@ -17,6 +18,10 @@ export class UserIntentService {
     private intents : Map<string, IntentMetaData> = new Map<string, IntentMetaData>();
 
     private eventHandlers: Map<EventType, EventHandler<EventListener>> = new Map<EventType, EventHandler<EventListener>>();
+
+    private firstEventFinished = false;
+
+    private shouldIgnoreFirstWarning = false;
 
     constructor() {
         this.initEventHandlers();
@@ -46,9 +51,11 @@ export class UserIntentService {
         const existing = this.intents.get(name) as IntentMetaData;
         if (!existing) {
             this.warnNonExistingEvent(name, 'complete');
+            this.markEventStatuses();
             return;
         }
 
+        this.markEventStatuses();
         this.removeIntent(name, existing);
         this.triggerEvent('completed', name, existing);
     }
@@ -57,9 +64,11 @@ export class UserIntentService {
         const existing = this.intents.get(name) as IntentMetaData;
         if (!existing) {
             this.warnNonExistingEvent(name, 'cancel');
+            this.markEventStatuses();
             return;
         }
 
+        this.markEventStatuses();
         this.removeIntent(name, existing);
         this.triggerEvent('cancelled', name, existing);
     }
@@ -70,6 +79,10 @@ export class UserIntentService {
 
     public removeEventListener(type: EventType, listener: EventListener): void {
         this.getEventHandler(type).remove(listener);
+    }
+
+    public ignoreFirstWarning(): void {
+        this.shouldIgnoreFirstWarning = true;
     }
 
     private getEventHandler(type: EventType): EventHandler<EventListener> {
@@ -92,6 +105,7 @@ export class UserIntentService {
         let metaData: IntentMetaData;
 
         const timeout = window.setTimeout(() => {
+            this.markEventStatuses();
             this.removeIntent(name, metaData);
             this.triggerEvent('failed', name, metaData);
         }, duration);
@@ -120,14 +134,26 @@ export class UserIntentService {
     }
 
     private warnNonExistingEvent(name: string, action: string): void {
+        // should we ignore the first warning?
+        if (this.shouldIgnoreFirstWarning && !this.firstEventFinished) {
+            return;
+        }
         this.warn(`Trying to ${action} a non-existing intent: ${name}. Did you forget to start it or has already completed/failed?`);
     }
 
     private initEventHandlers(): void {
-        const types: EventType[] = [ 'completed', 'incompleted', 'cancelled', 'failed' ];
+        const types: EventType[] = [
+            'completed', 'incompleted', 'cancelled', 'failed'
+        ];
         types.forEach(type => {
             this.eventHandlers.set(type, new EventHandler<EventListener>());
         });
+    }
+
+    private markEventStatuses(): void {
+        if (!this.firstEventFinished) {
+            this.firstEventFinished = true;
+        }
     }
 
 }

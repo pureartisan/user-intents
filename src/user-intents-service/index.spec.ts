@@ -279,6 +279,47 @@ describe('UserIntentService', () => {
         });
     });
 
+    describe('ignoreFirstWarning()', () => {
+
+        // tslint:disable-next-line no-console
+        const originalConsoleWarn = console.warn;
+
+        let consoleWarn: jest.SpyInstance;
+
+        beforeEach(() => {
+            consoleWarn = jest.fn();
+            // tslint:disable-next-line no-console
+            console.warn = consoleWarn as any;
+        });
+
+        afterEach(() => {
+            // tslint:disable-next-line no-console
+            console.warn = originalConsoleWarn;
+        });
+
+        it('should not ignore first warning by default', () => {
+            // cause a warning by cancelling a non-existing event
+            service.cancel('my-intent');
+
+            // warning is logged
+            expect(consoleWarn).toHaveBeenCalled();
+        });
+
+        it('should ignore first warning when forced', () => {
+
+            // force ignore first warning
+            service.ignoreFirstWarning();
+
+            // cause multiple warnings by cancelling a non-existing events
+            service.cancel('my-intent-1');
+            service.cancel('my-intent-2');
+            service.cancel('my-intent-3');
+
+            // warning is logged, but first one is ignored
+            expect(consoleWarn).toHaveBeenCalledTimes(2);
+        });
+    });
+
     describe('event listeners', () => {
         it('should not fail when adding an event listener', () => {
             const listener = jest.fn();
