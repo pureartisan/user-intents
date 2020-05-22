@@ -56,3 +56,11 @@ export const addEventListener = (type: EventType, listener: EventListener): void
 export const removeEventListener = (type: EventType, listener: EventListener): void => {
     singleton.removeEventListener(type, listener);
 }
+
+/**
+ * Ignore first "non existing event" warning from being logged.
+ * This is useful for when completing an event when the first page loads in an application.
+ */
+export const ignoreFirstWarning = (): void => {
+    singleton.ignoreFirstWarning();
+}
