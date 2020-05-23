@@ -1,6 +1,6 @@
 # User Intents
 
-[![npm version](https://badge.fury.io/js/user-intents.svg)](https://badge.fury.io/js/user-intents) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pureartisan_user-intents&metric=alert_status)](https://sonarcloud.io/dashboard?id=pureartisan_user-intents)
+[![npm version](https://badge.fury.io/js/user-intents.svg)](https://badge.fury.io/js/user-intents) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pureartisan_user-intents&metric=alert_status)](https://sonarcloud.io/dashboard?id=pureartisan_user-intents) [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 
 A light-weight javascript library for User Intents on Web Applications. Supports ES6 and TypeScript.
 
