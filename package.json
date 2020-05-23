@@ -26,7 +26,7 @@
     "Monitoring"
   ],
   "author": "Prageeth Silva <prageethsilva@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/pureartisan/user-intents/issues"
   },
