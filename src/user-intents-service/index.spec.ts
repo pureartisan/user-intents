@@ -102,18 +102,18 @@ describe('UserIntentService', () => {
       const onTimedOut = jest.fn();
       service.addEventListener('timedout', onTimedOut);
 
-      const defaultDuration = 50;
+      const defaultDuration = 200;
       service.setDefaultDuration(defaultDuration);
 
       // no duration is provided
       service.start('my-intent', 0);
 
       // time elapses, but hasn't reached default duration yet
-      await sleep(defaultDuration - 1);
+      await sleep(50);
       expect(onTimedOut).not.toHaveBeenCalled();
 
       // further time elapses, and passes default duration
-      await sleep(2); // time => defaultDuration + 2
+      await sleep(200); // time => greater than 200
 
       // intent should timeout
       expect(onTimedOut).toHaveBeenCalled();
