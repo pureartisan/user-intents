@@ -52,14 +52,15 @@ describe('UserIntentService', () => {
             service.addEventListener('incompleted', onIncompleted);
 
             // first time
-            service.start('my-intent', 50, { foo: 'bar' });
+            service.start('my-intent', 1000, { foo: '1' });
 
             // second time, before the first intent with the same name
             // has not finished yet
-            service.start('my-intent', 10, null);
+            service.start('my-intent', 1500, { bar: '2' });
 
             expect(onIncompleted).toHaveBeenCalledTimes(1);
-            expect(onIncompleted).toHaveBeenCalledWith('my-intent', 50, { foo: 'bar' });
+            // first intent is "incompleted"
+            expect(onIncompleted).toHaveBeenCalledWith('my-intent', 1000, { foo: '1' });
         });
 
         it('should trigger a `timedout` event when the started event is not completed before the duration', async () => {
