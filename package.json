@@ -10,6 +10,7 @@
     "lint:format": "prettier --check \"src/**/*.{ts,js}\"",
     "lint:format:fix": "prettier --write \"src/**/*.{ts,js}\"",
     "test": "jest --config jestconfig.json --coverage=true --collectCoverageFrom=src/**/*.{ts,js}",
+    "test:ci": "npm run test -- --ci",
     "test:watch": "jest --config jestconfig.json --watch",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
@@ -38,7 +39,7 @@
     "@types/jest": "^25.2.2",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
-    "jest-sonar-reporter": "^2.0.0",
+    "jest-junit": "^10.0.0",
     "lint-staged": "^10.2.6",
     "prettier": "^2.0.5",
     "ts-jest": "^26.0.0",
@@ -47,13 +48,13 @@
     "typescript": "^3.9.2"
   },
   "dependencies": {},
-  "jest": {
-    "testResultsProcessor": "jest-sonar-reporter"
-  },
   "husky": {
     "hooks": {
       "pre-commit": "tsc && lint-staged"
     }
+  },
+  "jest-junit": {
+    "outputDirectory": "./reports/"
   },
   "lint-staged": {
     "**/*.+(js|jsx|ts|tsx|md)": [
