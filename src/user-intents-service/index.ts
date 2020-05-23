@@ -7,7 +7,7 @@ interface IntentMetaData {
 }
 
 // NOTE: remember to initialise all of them in the service
-export type EventType = 'completed' | 'incompleted' | 'cancelled' | 'failed';
+export type EventType = 'completed' | 'incompleted' | 'cancelled' | 'failed' | 'timedout';
 
 export type EventListener = (name: string, duration: number, data?: any) => void;
 
@@ -73,6 +73,19 @@ export class UserIntentService {
         this.triggerEvent('cancelled', name, existing);
     }
 
+    public fail(name: string): void {
+        const existing = this.intents.get(name) as IntentMetaData;
+        if (!existing) {
+            this.warnNonExistingEvent(name, 'fail');
+            this.markEventStatuses();
+            return;
+        }
+
+        this.markEventStatuses();
+        this.removeIntent(name, existing);
+        this.triggerEvent('failed', name, existing);
+    }
+
     public addEventListener(type: EventType, listener: EventListener): void {
         this.getEventHandler(type).add(listener);
     }
@@ -107,7 +120,7 @@ export class UserIntentService {
         const timeout = window.setTimeout(() => {
             this.markEventStatuses();
             this.removeIntent(name, metaData);
-            this.triggerEvent('failed', name, metaData);
+            this.triggerEvent('timedout', name, metaData);
         }, duration);
 
         metaData = {
@@ -143,7 +156,7 @@ export class UserIntentService {
 
     private initEventHandlers(): void {
         const types: EventType[] = [
-            'completed', 'incompleted', 'cancelled', 'failed'
+            'completed', 'incompleted', 'cancelled', 'failed', 'timedout'
         ];
         types.forEach(type => {
             this.eventHandlers.set(type, new EventHandler<EventListener>());

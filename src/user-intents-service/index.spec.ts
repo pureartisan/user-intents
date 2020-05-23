@@ -62,9 +62,9 @@ describe('UserIntentService', () => {
             expect(onIncompleted).toHaveBeenCalledWith('my-intent', 50, { foo: 'bar' });
         });
 
-        it('should trigger a `failed` event when the started event is not completed before the duration', async () => {
-            const onFailed = jest.fn();
-            service.addEventListener('failed', onFailed);
+        it('should trigger a `timedout` event when the started event is not completed before the duration', async () => {
+            const onTimedOut = jest.fn();
+            service.addEventListener('timedout', onTimedOut);
 
             const smallTime = 50;
 
@@ -74,13 +74,13 @@ describe('UserIntentService', () => {
             // time elapses
             await sleep(smallTime + 1);
 
-            expect(onFailed).toHaveBeenCalledTimes(1);
-            expect(onFailed).toHaveBeenCalledWith('my-intent', smallTime, { foo: 'bar' });
+            expect(onTimedOut).toHaveBeenCalledTimes(1);
+            expect(onTimedOut).toHaveBeenCalledWith('my-intent', smallTime, { foo: 'bar' });
         });
 
         it('should use default duration if the duration is not provided', async () => {
-            const onFailed = jest.fn();
-            service.addEventListener('failed', onFailed);
+            const onTimedOut = jest.fn();
+            service.addEventListener('timedout', onTimedOut);
 
             const defaultDuration = 100;
             service.setDefaultDuration(defaultDuration);
@@ -90,18 +90,18 @@ describe('UserIntentService', () => {
 
             // time elapses, but hasn't reached default duration yet
             await sleep(50);
-            expect(onFailed).not.toHaveBeenCalled();
+            expect(onTimedOut).not.toHaveBeenCalled();
 
             // further time elapses, and passes default duration
             await sleep(60); // time => 110 (> default duration)
 
-            // intent should fail
-            expect(onFailed).toHaveBeenCalled();
+            // intent should time out
+            expect(onTimedOut).toHaveBeenCalled();
         });
 
         it('should use default duration if an invalid duration is provided', async () => {
-            const onFailed = jest.fn();
-            service.addEventListener('failed', onFailed);
+            const onTimedOut = jest.fn();
+            service.addEventListener('timedout', onTimedOut);
 
             const defaultDuration = 50;
             service.setDefaultDuration(defaultDuration);
@@ -111,13 +111,13 @@ describe('UserIntentService', () => {
 
             // time elapses, but hasn't reached default duration yet
             await sleep(defaultDuration - 1);
-            expect(onFailed).not.toHaveBeenCalled();
+            expect(onTimedOut).not.toHaveBeenCalled();
 
             // further time elapses, and passes default duration
             await sleep(2); // time => defaultDuration + 2
 
-            // intent should fail
-            expect(onFailed).toHaveBeenCalled();
+            // intent should timeout
+            expect(onTimedOut).toHaveBeenCalled();
         });
     });
 
@@ -236,11 +236,11 @@ describe('UserIntentService', () => {
             expect(consoleWarn).toHaveBeenCalled();
         });
 
-        it('should log warning if intent has already failed', async () => {
+        it('should log warning if intent has already timed out', async () => {
             const duration = 10;
             service.start('my-intent', duration);
 
-            // time elpased and intent failed
+            // time elpased and intent timed out
             await sleep(duration + 1);
 
             // cancel no longer pending intent
@@ -256,7 +256,7 @@ describe('UserIntentService', () => {
             service.complete('my-intent');
 
             // cancel no longer pending intent
-            service.complete('my-intent');
+            service.cancel('my-intent');
 
             expect(consoleWarn).toHaveBeenCalled();
         });
@@ -276,6 +276,85 @@ describe('UserIntentService', () => {
 
             expect(onCancelled).toHaveBeenCalledTimes(1);
             expect(onCancelled).toHaveBeenCalledWith('my-intent', 1000, { foo: 'bar' });
+        });
+    });
+
+    describe('fail()', () => {
+
+        // tslint:disable-next-line no-console
+        const originalConsoleWarn = console.warn;
+
+        let consoleWarn: jest.SpyInstance;
+
+        beforeEach(() => {
+            consoleWarn = jest.fn();
+            // tslint:disable-next-line no-console
+            console.warn = consoleWarn as any;
+        });
+
+        afterEach(() => {
+            // tslint:disable-next-line no-console
+            console.warn = originalConsoleWarn;
+        });
+
+        it('should not log warning if intent was started and is still pending', () => {
+            service.start('my-intent', 10);
+
+            // fail pending intent
+            service.fail('my-intent');
+
+            expect(consoleWarn).not.toHaveBeenCalled();
+        });
+
+        it('should log warning if intent was never started', () => {
+            service.start('my-intent', 10);
+
+            // fail non-existing intent
+            service.fail('other-intent');
+
+            expect(consoleWarn).toHaveBeenCalled();
+        });
+
+        it('should log warning if intent has already timed out', async () => {
+            const duration = 10;
+            service.start('my-intent', duration);
+
+            // time elpased and intent timed out
+            await sleep(duration + 1);
+
+            // fail no longer pending intent
+            service.fail('my-intent');
+
+            expect(consoleWarn).toHaveBeenCalled();
+        });
+
+        it('should log warning if intent has already been completed', () => {
+            service.start('my-intent', 10);
+
+            // intent completed
+            service.complete('my-intent');
+
+            // fail no longer pending intent
+            service.fail('my-intent');
+
+            expect(consoleWarn).toHaveBeenCalled();
+        });
+
+        it('should trigger a `failed` event when the started event is failed before the duration', async () => {
+            const onFailed = jest.fn();
+            service.addEventListener('failed', onFailed);
+
+            // first time
+            service.start('my-intent', 1000, { foo: 'bar' });
+
+            // wait for a while, but not as long as the timeout duration
+            await sleep(20);
+
+            // fail the intent before the timeout
+            service.fail('my-intent');
+
+            expect(onFailed).toHaveBeenCalledTimes(1);
+            expect(onFailed).toHaveBeenCalledWith('my-intent', 1000, { foo: 'bar' });
         });
     });
 

@@ -10,7 +10,7 @@ export {
 /**
  * Start a user intent with a given name.
  * The intent is expected to be completed within the given time duration.
- * If the intent is not completed on time, a `failed` event will be triggered.
+ * If the intent is not completed on time, a `timedout` event will be triggered.
  * If another intent of the same name was started before the current intent was completed/cancelled/failed, an `incompleted` event will be triggered.
  * @param name The name of the user intent, will be matched exactly
  * @param duration The max duration the intent should take
@@ -36,6 +36,15 @@ export const completeIntent = (name: string): void => {
  */
 export const cancelIntent = (name: string): void => {
     singleton.cancel(name);
+}
+
+/**
+ * Mark an event as failed. This will trigger a `failed` event.
+ * If there is no such event, a warning will be logged into console.
+ * @param name The name of the event
+ */
+export const failIntent = (name: string): void => {
+    singleton.fail(name);
 }
 
 /**

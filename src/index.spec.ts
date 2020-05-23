@@ -5,6 +5,7 @@ import {
     startIntent,
     completeIntent,
     cancelIntent,
+    failIntent,
     addEventListener,
     removeEventListener,
     ignoreFirstWarning
@@ -60,6 +61,20 @@ describe('Public API', () => {
             cancelIntent('my-intent');
             expect(singleton.cancel).toHaveBeenCalled();
             expect(singleton.cancel).toHaveBeenCalledWith('my-intent');
+        });
+
+    });
+
+    describe('failIntent()', () => {
+
+        beforeEach(() => {
+            singleton.fail.mockClear();
+        });
+
+        it('should pass through args to the singleton service', () => {
+            failIntent('my-intent');
+            expect(singleton.fail).toHaveBeenCalled();
+            expect(singleton.fail).toHaveBeenCalledWith('my-intent');
         });
 
     });
