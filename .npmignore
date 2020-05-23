@@ -3,3 +3,6 @@ test
 tsconfig.json
 tslint.json
 .prettierrc
+coverage
+reports
+.github
