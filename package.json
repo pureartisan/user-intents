@@ -6,7 +6,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "format": "prettier --write \"src/**/*.{ts,js}\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json --coverage=true --collectCoverageFrom=src/**/*.{ts,js}",
     "test:watch": "jest --config jestconfig.json --watch",
@@ -36,8 +36,10 @@
   ],
   "devDependencies": {
     "@types/jest": "^25.2.2",
+    "husky": "^4.2.5",
     "jest": "^26.0.1",
     "jest-sonar-reporter": "^2.0.0",
+    "lint-staged": "^10.2.6",
     "prettier": "^2.0.5",
     "ts-jest": "^26.0.0",
     "tslint": "^6.1.2",
@@ -47,5 +49,16 @@
   "dependencies": {},
   "jest": {
     "testResultsProcessor": "jest-sonar-reporter"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsc && lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.+(js|jsx|ts|tsx|md)": [
+        "prettier --write",
+        "git add"
+    ]
   }
 }
