@@ -2,10 +2,7 @@ import { UserIntentService, EventListener, EventType } from './user-intents-serv
 
 const singleton = new UserIntentService();
 
-export {
-    EventType,
-    EventListener
-};
+export { EventType, EventListener };
 
 /**
  * Start a user intent with a given name.
@@ -17,8 +14,8 @@ export {
  * @param data Any state data that will be passed to event listeners when an event occurs
  */
 export const startIntent = (name: string, timeout?: number, data?: object): void => {
-    singleton.start(name, timeout, data);
-}
+  singleton.start(name, timeout, data);
+};
 
 /**
  * Mark an event as completed. This will trigger a `completed` event.
@@ -26,8 +23,8 @@ export const startIntent = (name: string, timeout?: number, data?: object): void
  * @param name The name of the event
  */
 export const completeIntent = (name: string): void => {
-    singleton.complete(name);
-}
+  singleton.complete(name);
+};
 
 /**
  * Mark an event as cancelled. This will trigger a `cancelled` event.
@@ -35,8 +32,8 @@ export const completeIntent = (name: string): void => {
  * @param name The name of the event
  */
 export const cancelIntent = (name: string): void => {
-    singleton.cancel(name);
-}
+  singleton.cancel(name);
+};
 
 /**
  * Mark an event as failed. This will trigger a `failed` event.
@@ -44,8 +41,8 @@ export const cancelIntent = (name: string): void => {
  * @param name The name of the event
  */
 export const failIntent = (name: string): void => {
-    singleton.fail(name);
-}
+  singleton.fail(name);
+};
 
 /**
  * Add an event listener, that gets called when the appropriate event gets triggered.
@@ -53,8 +50,8 @@ export const failIntent = (name: string): void => {
  * @param listener The callback function. The `name`, `timeout` and `data` will be passed as parameters to the callback function.
  */
 export const addEventListener = (type: EventType, listener: EventListener): void => {
-    singleton.addEventListener(type, listener);
-}
+  singleton.addEventListener(type, listener);
+};
 
 /**
  * Remove an already added event listener.
@@ -63,28 +60,28 @@ export const addEventListener = (type: EventType, listener: EventListener): void
  * @param listener The callback function reference.
  */
 export const removeEventListener = (type: EventType, listener: EventListener): void => {
-    singleton.removeEventListener(type, listener);
-}
+  singleton.removeEventListener(type, listener);
+};
 
 /**
  * Enable warnings. Warnings are enabled by default, so this is useful when we want to re-enable
  * warnings after disabling them.
  */
 export const enableWarnings = (): void => {
-    singleton.enableWarnings();
-}
+  singleton.enableWarnings();
+};
 
 /**
  * Disable warnings completely. Warnings are enabled by default.
  */
 export const disableWarnings = (): void => {
-    singleton.disableWarnings();
-}
+  singleton.disableWarnings();
+};
 
 /**
  * Ignore first "non existing event" warning from being logged.
  * This is useful for when completing an event when the first page loads in an application.
  */
 export const ignoreFirstWarning = (): void => {
-    singleton.ignoreFirstWarning();
-}
+  singleton.ignoreFirstWarning();
+};

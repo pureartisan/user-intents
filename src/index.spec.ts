@@ -1,153 +1,130 @@
-
 import { UserIntentService } from './user-intents-service';
 
 import {
-    startIntent,
-    completeIntent,
-    cancelIntent,
-    failIntent,
-    addEventListener,
-    removeEventListener,
-    enableWarnings,
-    disableWarnings,
-    ignoreFirstWarning
+  startIntent,
+  completeIntent,
+  cancelIntent,
+  failIntent,
+  addEventListener,
+  removeEventListener,
+  enableWarnings,
+  disableWarnings,
+  ignoreFirstWarning
 } from './index';
 
 jest.mock('./user-intents-service');
 
 describe('Public API', () => {
+  let singleton: jest.Mocked<UserIntentService>;
 
-    let singleton: jest.Mocked<UserIntentService>;
+  beforeEach(() => {
+    singleton = (UserIntentService as any).mock.instances[0];
+  });
 
+  describe('startIntent()', () => {
     beforeEach(() => {
-        singleton = (UserIntentService as any).mock.instances[0];
+      singleton.start.mockClear();
     });
 
-    describe('startIntent()', () => {
+    it('should pass through args to the singleton service', () => {
+      startIntent('my-intent', 1000, { foo: 'bar' });
+      expect(singleton.start).toHaveBeenCalled();
+      expect(singleton.start).toHaveBeenCalledWith('my-intent', 1000, { foo: 'bar' });
+    });
+  });
 
-        beforeEach(() => {
-            singleton.start.mockClear();
-        });
-
-        it('should pass through args to the singleton service', () => {
-            startIntent('my-intent', 1000, { foo: 'bar' });
-            expect(singleton.start).toHaveBeenCalled();
-            expect(singleton.start).toHaveBeenCalledWith(
-                'my-intent', 1000, { foo: 'bar' }
-            );
-        });
-
+  describe('completeIntent()', () => {
+    beforeEach(() => {
+      singleton.complete.mockClear();
     });
 
-    describe('completeIntent()', () => {
+    it('should pass through args to the singleton service', () => {
+      completeIntent('my-intent');
+      expect(singleton.complete).toHaveBeenCalled();
+      expect(singleton.complete).toHaveBeenCalledWith('my-intent');
+    });
+  });
 
-        beforeEach(() => {
-            singleton.complete.mockClear();
-        });
-
-        it('should pass through args to the singleton service', () => {
-            completeIntent('my-intent');
-            expect(singleton.complete).toHaveBeenCalled();
-            expect(singleton.complete).toHaveBeenCalledWith('my-intent');
-        });
-
+  describe('cancelIntent()', () => {
+    beforeEach(() => {
+      singleton.cancel.mockClear();
     });
 
-    describe('cancelIntent()', () => {
+    it('should pass through args to the singleton service', () => {
+      cancelIntent('my-intent');
+      expect(singleton.cancel).toHaveBeenCalled();
+      expect(singleton.cancel).toHaveBeenCalledWith('my-intent');
+    });
+  });
 
-        beforeEach(() => {
-            singleton.cancel.mockClear();
-        });
-
-        it('should pass through args to the singleton service', () => {
-            cancelIntent('my-intent');
-            expect(singleton.cancel).toHaveBeenCalled();
-            expect(singleton.cancel).toHaveBeenCalledWith('my-intent');
-        });
-
+  describe('failIntent()', () => {
+    beforeEach(() => {
+      singleton.fail.mockClear();
     });
 
-    describe('failIntent()', () => {
+    it('should pass through args to the singleton service', () => {
+      failIntent('my-intent');
+      expect(singleton.fail).toHaveBeenCalled();
+      expect(singleton.fail).toHaveBeenCalledWith('my-intent');
+    });
+  });
 
-        beforeEach(() => {
-            singleton.fail.mockClear();
-        });
-
-        it('should pass through args to the singleton service', () => {
-            failIntent('my-intent');
-            expect(singleton.fail).toHaveBeenCalled();
-            expect(singleton.fail).toHaveBeenCalledWith('my-intent');
-        });
-
+  describe('addEventListener()', () => {
+    beforeEach(() => {
+      singleton.addEventListener.mockClear();
     });
 
-    describe('addEventListener()', () => {
+    it('should pass through args to the singleton service', () => {
+      const listener = jest.fn();
+      addEventListener('completed', listener);
+      expect(singleton.addEventListener).toHaveBeenCalled();
+      expect(singleton.addEventListener).toHaveBeenCalledWith('completed', listener);
+    });
+  });
 
-        beforeEach(() => {
-            singleton.addEventListener.mockClear();
-        });
-
-        it('should pass through args to the singleton service', () => {
-            const listener = jest.fn();
-            addEventListener('completed', listener);
-            expect(singleton.addEventListener).toHaveBeenCalled();
-            expect(singleton.addEventListener).toHaveBeenCalledWith('completed', listener);
-        });
-
+  describe('removeEventListener()', () => {
+    beforeEach(() => {
+      singleton.removeEventListener.mockClear();
     });
 
-    describe('removeEventListener()', () => {
+    it('should pass through args to the singleton service', () => {
+      const listener = jest.fn();
+      removeEventListener('completed', listener);
+      expect(singleton.removeEventListener).toHaveBeenCalled();
+      expect(singleton.removeEventListener).toHaveBeenCalledWith('completed', listener);
+    });
+  });
 
-        beforeEach(() => {
-            singleton.removeEventListener.mockClear();
-        });
-
-        it('should pass through args to the singleton service', () => {
-            const listener = jest.fn();
-            removeEventListener('completed', listener);
-            expect(singleton.removeEventListener).toHaveBeenCalled();
-            expect(singleton.removeEventListener).toHaveBeenCalledWith('completed', listener);
-        });
-
+  describe('enableWarnings()', () => {
+    beforeEach(() => {
+      singleton.enableWarnings.mockClear();
     });
 
-    describe('enableWarnings()', () => {
+    it('should pass through to the singleton service', () => {
+      enableWarnings();
+      expect(singleton.enableWarnings).toHaveBeenCalled();
+    });
+  });
 
-        beforeEach(() => {
-            singleton.enableWarnings.mockClear();
-        });
-
-        it('should pass through to the singleton service', () => {
-            enableWarnings();
-            expect(singleton.enableWarnings).toHaveBeenCalled();
-        });
-
+  describe('disableWarnings()', () => {
+    beforeEach(() => {
+      singleton.disableWarnings.mockClear();
     });
 
-    describe('disableWarnings()', () => {
+    it('should pass through to the singleton service', () => {
+      disableWarnings();
+      expect(singleton.disableWarnings).toHaveBeenCalled();
+    });
+  });
 
-        beforeEach(() => {
-            singleton.disableWarnings.mockClear();
-        });
-
-        it('should pass through to the singleton service', () => {
-            disableWarnings();
-            expect(singleton.disableWarnings).toHaveBeenCalled();
-        });
-
+  describe('ignoreFirstWarning()', () => {
+    beforeEach(() => {
+      singleton.ignoreFirstWarning.mockClear();
     });
 
-    describe('ignoreFirstWarning()', () => {
-
-        beforeEach(() => {
-            singleton.ignoreFirstWarning.mockClear();
-        });
-
-        it('should pass through to the singleton service', () => {
-            ignoreFirstWarning();
-            expect(singleton.ignoreFirstWarning).toHaveBeenCalled();
-        });
-
+    it('should pass through to the singleton service', () => {
+      ignoreFirstWarning();
+      expect(singleton.ignoreFirstWarning).toHaveBeenCalled();
     });
-
+  });
 });
