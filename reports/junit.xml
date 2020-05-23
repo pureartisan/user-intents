@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="46" failures="0" time="6.329">
+  <testsuite name="EventHandler" errors="0" failures="0" skipped="0" timestamp="2020-05-23T17:19:46" time="3.631" tests="7">
+    <testcase classname="EventHandler should be able to add listener without failing" name="EventHandler should be able to add listener without failing" time="0.003">
+    </testcase>
+    <testcase classname="EventHandler should be able to add multiple listener without failing" name="EventHandler should be able to add multiple listener without failing" time="0.001">
+    </testcase>
+    <testcase classname="EventHandler should be able to remove listener without failing" name="EventHandler should be able to remove listener without failing" time="0">
+    </testcase>
+    <testcase classname="EventHandler should call all listeners when an event is triggered" name="EventHandler should call all listeners when an event is triggered" time="0.002">
+    </testcase>
+    <testcase classname="EventHandler should call listener every time an event is triggered" name="EventHandler should call listener every time an event is triggered" time="0.001">
+    </testcase>
+    <testcase classname="EventHandler should not call listener when it has been removed" name="EventHandler should not call listener when it has been removed" time="0.001">
+    </testcase>
+    <testcase classname="EventHandler should ignore the same listener being added multiple times" name="EventHandler should ignore the same listener being added multiple times" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Public API" errors="0" failures="0" skipped="0" timestamp="2020-05-23T17:19:46" time="4.151" tests="9">
+    <testcase classname="Public API startIntent() should pass through args to the singleton service" name="Public API startIntent() should pass through args to the singleton service" time="0.004">
+    </testcase>
+    <testcase classname="Public API completeIntent() should pass through args to the singleton service" name="Public API completeIntent() should pass through args to the singleton service" time="0.001">
+    </testcase>
+    <testcase classname="Public API cancelIntent() should pass through args to the singleton service" name="Public API cancelIntent() should pass through args to the singleton service" time="0">
+    </testcase>
+    <testcase classname="Public API failIntent() should pass through args to the singleton service" name="Public API failIntent() should pass through args to the singleton service" time="0.001">
+    </testcase>
+    <testcase classname="Public API addEventListener() should pass through args to the singleton service" name="Public API addEventListener() should pass through args to the singleton service" time="0">
+    </testcase>
+    <testcase classname="Public API removeEventListener() should pass through args to the singleton service" name="Public API removeEventListener() should pass through args to the singleton service" time="0.001">
+    </testcase>
+    <testcase classname="Public API enableWarnings() should pass through to the singleton service" name="Public API enableWarnings() should pass through to the singleton service" time="0">
+    </testcase>
+    <testcase classname="Public API disableWarnings() should pass through to the singleton service" name="Public API disableWarnings() should pass through to the singleton service" time="0.001">
+    </testcase>
+    <testcase classname="Public API ignoreFirstWarning() should pass through to the singleton service" name="Public API ignoreFirstWarning() should pass through to the singleton service" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="UserIntentService" errors="0" failures="0" skipped="0" timestamp="2020-05-23T17:19:46" time="4.443" tests="30">
+    <testcase classname="UserIntentService start() should throw error if invalid name is provided" name="UserIntentService start() should throw error if invalid name is provided" time="0.012">
+    </testcase>
+    <testcase classname="UserIntentService start() should throw error if invalid duration is provided and default duration is not set" name="UserIntentService start() should throw error if invalid duration is provided and default duration is not set" time="0.001">
+    </testcase>
+    <testcase classname="UserIntentService start() should not trigger an `incompleted` event when a previous intent with same name does not exist" name="UserIntentService start() should not trigger an `incompleted` event when a previous intent with same name does not exist" time="0">
+    </testcase>
+    <testcase classname="UserIntentService start() should trigger a `completed` event when the started event is completed before the duration" name="UserIntentService start() should trigger a `completed` event when the started event is completed before the duration" time="0.023">
+    </testcase>
+    <testcase classname="UserIntentService start() should trigger an `incompleted` event when the intent is was started with the same name" name="UserIntentService start() should trigger an `incompleted` event when the intent is was started with the same name" time="0.001">
+    </testcase>
+    <testcase classname="UserIntentService start() should trigger a `timedout` event when the started event is not completed before the duration" name="UserIntentService start() should trigger a `timedout` event when the started event is not completed before the duration" time="0.052">
+    </testcase>
+    <testcase classname="UserIntentService start() should use default duration if the duration is not provided" name="UserIntentService start() should use default duration if the duration is not provided" time="0.111">
+    </testcase>
+    <testcase classname="UserIntentService start() should use default duration if an invalid duration is provided" name="UserIntentService start() should use default duration if an invalid duration is provided" time="0.052">
+    </testcase>
+    <testcase classname="UserIntentService complete() should not log warning if intent was started and is still pending" name="UserIntentService complete() should not log warning if intent was started and is still pending" time="0">
+    </testcase>
+    <testcase classname="UserIntentService complete() should log warning if intent was never started" name="UserIntentService complete() should log warning if intent was never started" time="0.001">
+    </testcase>
+    <testcase classname="UserIntentService complete() should log warning if intent has already failed" name="UserIntentService complete() should log warning if intent has already failed" time="0.011">
+    </testcase>
+    <testcase classname="UserIntentService complete() should log warning if intent has already been cancelled" name="UserIntentService complete() should log warning if intent has already been cancelled" time="0">
+    </testcase>
+    <testcase classname="UserIntentService complete() should trigger a `completed` event when the started event is completed before the duration" name="UserIntentService complete() should trigger a `completed` event when the started event is completed before the duration" time="0.021">
+    </testcase>
+    <testcase classname="UserIntentService cancel() should not log warning if intent was started and is still pending" name="UserIntentService cancel() should not log warning if intent was started and is still pending" time="0">
+    </testcase>
+    <testcase classname="UserIntentService cancel() should log warning if intent was never started" name="UserIntentService cancel() should log warning if intent was never started" time="0.001">
+    </testcase>
+    <testcase classname="UserIntentService cancel() should log warning if intent has already timed out" name="UserIntentService cancel() should log warning if intent has already timed out" time="0.012">
+    </testcase>
+    <testcase classname="UserIntentService cancel() should log warning if intent has already been completed" name="UserIntentService cancel() should log warning if intent has already been completed" time="0.001">
+    </testcase>
+    <testcase classname="UserIntentService cancel() should trigger a `cancelled` event when the started event is cancelled before the duration" name="UserIntentService cancel() should trigger a `cancelled` event when the started event is cancelled before the duration" time="0.021">
+    </testcase>
+    <testcase classname="UserIntentService fail() should not log warning if intent was started and is still pending" name="UserIntentService fail() should not log warning if intent was started and is still pending" time="0">
+    </testcase>
+    <testcase classname="UserIntentService fail() should log warning if intent was never started" name="UserIntentService fail() should log warning if intent was never started" time="0.001">
+    </testcase>
+    <testcase classname="UserIntentService fail() should log warning if intent has already timed out" name="UserIntentService fail() should log warning if intent has already timed out" time="0.012">
+    </testcase>
+    <testcase classname="UserIntentService fail() should log warning if intent has already been completed" name="UserIntentService fail() should log warning if intent has already been completed" time="0">
+    </testcase>
+    <testcase classname="UserIntentService fail() should trigger a `failed` event when the started event is failed before the duration" name="UserIntentService fail() should trigger a `failed` event when the started event is failed before the duration" time="0.022">
+    </testcase>
+    <testcase classname="UserIntentService warnings should have warnings enabled by default" name="UserIntentService warnings should have warnings enabled by default" time="0">
+    </testcase>
+    <testcase classname="UserIntentService warnings disableWarnings() should be able to disable all warnings" name="UserIntentService warnings disableWarnings() should be able to disable all warnings" time="0">
+    </testcase>
+    <testcase classname="UserIntentService warnings enableWarnings() should be able to re-enable warnings after disabling" name="UserIntentService warnings enableWarnings() should be able to re-enable warnings after disabling" time="0.001">
+    </testcase>
+    <testcase classname="UserIntentService warnings ignoreFirstWarning() should ignore first warning when forced" name="UserIntentService warnings ignoreFirstWarning() should ignore first warning when forced" time="0">
+    </testcase>
+    <testcase classname="UserIntentService event listeners should not fail when adding an event listener" name="UserIntentService event listeners should not fail when adding an event listener" time="0">
+    </testcase>
+    <testcase classname="UserIntentService event listeners should not fail when removing an event listener" name="UserIntentService event listeners should not fail when removing an event listener" time="0.001">
+    </testcase>
+    <testcase classname="UserIntentService event listeners should only call active event listeners" name="UserIntentService event listeners should only call active event listeners" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>
