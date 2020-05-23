@@ -67,6 +67,21 @@ export const removeEventListener = (type: EventType, listener: EventListener): v
 }
 
 /**
+ * Enable warnings. Warnings are enabled by default, so this is useful when we want to re-enable
+ * warnings after disabling them.
+ */
+export const enableWarnings = (): void => {
+    singleton.enableWarnings();
+}
+
+/**
+ * Disable warnings completely. Warnings are enabled by default.
+ */
+export const disableWarnings = (): void => {
+    singleton.disableWarnings();
+}
+
+/**
  * Ignore first "non existing event" warning from being logged.
  * This is useful for when completing an event when the first page loads in an application.
  */

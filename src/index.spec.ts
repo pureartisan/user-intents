@@ -8,6 +8,8 @@ import {
     failIntent,
     addEventListener,
     removeEventListener,
+    enableWarnings,
+    disableWarnings,
     ignoreFirstWarning
 } from './index';
 
@@ -105,6 +107,32 @@ describe('Public API', () => {
             removeEventListener('completed', listener);
             expect(singleton.removeEventListener).toHaveBeenCalled();
             expect(singleton.removeEventListener).toHaveBeenCalledWith('completed', listener);
+        });
+
+    });
+
+    describe('enableWarnings()', () => {
+
+        beforeEach(() => {
+            singleton.enableWarnings.mockClear();
+        });
+
+        it('should pass through to the singleton service', () => {
+            enableWarnings();
+            expect(singleton.enableWarnings).toHaveBeenCalled();
+        });
+
+    });
+
+    describe('disableWarnings()', () => {
+
+        beforeEach(() => {
+            singleton.disableWarnings.mockClear();
+        });
+
+        it('should pass through to the singleton service', () => {
+            disableWarnings();
+            expect(singleton.disableWarnings).toHaveBeenCalled();
         });
 
     });

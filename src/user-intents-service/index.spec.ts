@@ -358,7 +358,7 @@ describe('UserIntentService', () => {
         });
     });
 
-    describe('ignoreFirstWarning()', () => {
+    describe('warnings', () => {
 
         // tslint:disable-next-line no-console
         const originalConsoleWarn = console.warn;
@@ -376,7 +376,7 @@ describe('UserIntentService', () => {
             console.warn = originalConsoleWarn;
         });
 
-        it('should not ignore first warning by default', () => {
+        it('should have warnings enabled by default', () => {
             // cause a warning by cancelling a non-existing event
             service.cancel('my-intent');
 
@@ -384,18 +384,58 @@ describe('UserIntentService', () => {
             expect(consoleWarn).toHaveBeenCalled();
         });
 
-        it('should ignore first warning when forced', () => {
+        describe('disableWarnings()', () => {
+            it('should be able to disable all warnings', () => {
+                // completely disable all warnings
+                service.disableWarnings();
 
-            // force ignore first warning
-            service.ignoreFirstWarning();
+                // cause multiple warnings by cancelling a non-existing events
+                service.cancel('my-intent-1');
+                service.cancel('my-intent-2');
+                service.cancel('my-intent-3');
 
-            // cause multiple warnings by cancelling a non-existing events
-            service.cancel('my-intent-1');
-            service.cancel('my-intent-2');
-            service.cancel('my-intent-3');
+                // warnings are not logged
+                expect(consoleWarn).not.toHaveBeenCalled();
+            });
+        });
 
-            // warning is logged, but first one is ignored
-            expect(consoleWarn).toHaveBeenCalledTimes(2);
+        describe('enableWarnings()', () => {
+            it('should be able to re-enable warnings after disabling', () => {
+                // completely disable all warnings
+                service.disableWarnings();
+
+                // cause warnings by cancelling a non-existing events
+                service.cancel('my-intent-1');
+
+                // warnings are not logged
+                expect(consoleWarn).not.toHaveBeenCalled();
+
+                 // re-eable warnings
+                 service.enableWarnings();
+
+                // cause more warnings by cancelling a non-existing events
+                service.cancel('my-intent-2');
+                service.cancel('my-intent-3');
+
+                // warning is logged, but first one is ignored
+                expect(consoleWarn).toHaveBeenCalledTimes(2);
+            });
+        });
+
+        describe('ignoreFirstWarning()', () => {
+            it('should ignore first warning when forced', () => {
+
+                // force ignore first warning
+                service.ignoreFirstWarning();
+
+                // cause multiple warnings by cancelling a non-existing events
+                service.cancel('my-intent-1');
+                service.cancel('my-intent-2');
+                service.cancel('my-intent-3');
+
+                // warning is logged, but first one is ignored
+                expect(consoleWarn).toHaveBeenCalledTimes(2);
+            });
         });
     });
 

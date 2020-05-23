@@ -19,8 +19,8 @@ export class UserIntentService {
 
     private eventHandlers: Map<EventType, EventHandler<EventListener>> = new Map<EventType, EventHandler<EventListener>>();
 
+    private warnings = true;
     private firstEventFinished = false;
-
     private shouldIgnoreFirstWarning = false;
 
     constructor() {
@@ -94,6 +94,14 @@ export class UserIntentService {
         this.getEventHandler(type).remove(listener);
     }
 
+    public enableWarnings(): void {
+        this.warnings = true;
+    }
+
+    public disableWarnings(): void {
+        this.warnings = false;
+    }
+
     public ignoreFirstWarning(): void {
         this.shouldIgnoreFirstWarning = true;
     }
@@ -142,6 +150,9 @@ export class UserIntentService {
     }
 
     private warn(msg: string): void {
+        if (!this.warnings) {
+            return;
+        }
         // tslint:disable-next-line no-console
         console.warn(msg);
     }
