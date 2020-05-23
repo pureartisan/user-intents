@@ -9,15 +9,15 @@ export {
 
 /**
  * Start a user intent with a given name.
- * The intent is expected to be completed within the given time duration.
+ * The intent is expected to be completed within the given timeout.
  * If the intent is not completed on time, a `timedout` event will be triggered.
  * If another intent of the same name was started before the current intent was completed/cancelled/failed, an `incompleted` event will be triggered.
  * @param name The name of the user intent, will be matched exactly
- * @param duration The max duration the intent should take
+ * @param timeout The max diration the intent should take
  * @param data Any state data that will be passed to event listeners when an event occurs
  */
-export const startIntent = (name: string, duration?: number, data?: object): void => {
-    singleton.start(name, duration, data);
+export const startIntent = (name: string, timeout?: number, data?: object): void => {
+    singleton.start(name, timeout, data);
 }
 
 /**
@@ -50,7 +50,7 @@ export const failIntent = (name: string): void => {
 /**
  * Add an event listener, that gets called when the appropriate event gets triggered.
  * @param type The type of event to listen to ('completed', 'incompleted', 'cancelled', 'failed')
- * @param listener The callback function. The `name`, `duration` and `data` will be passed as parameters to the callback function.
+ * @param listener The callback function. The `name`, `timeout` and `data` will be passed as parameters to the callback function.
  */
 export const addEventListener = (type: EventType, listener: EventListener): void => {
     singleton.addEventListener(type, listener);
