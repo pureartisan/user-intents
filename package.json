@@ -1,6 +1,6 @@
 {
   "name": "user-intents",
-  "version": "1.0.0-alpha.0",
+  "version": "0.0.1-alpha.0",
   "description": "A light-wieght library for User Intents in web applications.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -37,11 +37,15 @@
   "devDependencies": {
     "@types/jest": "^25.2.2",
     "jest": "^26.0.1",
+    "jest-sonar-reporter": "^2.0.0",
     "prettier": "^2.0.5",
     "ts-jest": "^26.0.0",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.2"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "jest": {
+    "testResultsProcessor": "jest-sonar-reporter"
+  }
 }
